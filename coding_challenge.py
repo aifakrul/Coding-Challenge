@@ -96,10 +96,8 @@ def lcs(X , Y):
 				L[i][j] = L[i-1][j-1]+1
 			else:
 				L[i][j] = max(L[i-1][j] , L[i][j-1])
-
-	# L[m][n] contains the length of LCS of X[0..n-1] & Y[0..m-1]
+	
 	return L[m][n]
-#end of function lcs
 
 def DotMatrixWindowScoring(windowSize, step, threshold, seq1, seq2):
     output = [[' '] * len(seq1) for _ in range(len(seq2))]
@@ -171,8 +169,8 @@ result_smithwaterman=smithwaterman(
         seq2="TTCATA"
     )
 
-X = "AGGTAB"
-Y = "GXTXAYB"
+X = "AGGTCC"
+Y = "ACGCATC"
 print ("Length of LCS is ", lcs(X, Y) )
 
 import numpy as np
