@@ -111,6 +111,7 @@ def DotMatrixWindowScoring(windowSize, step, threshold, seq1, seq2):
     for i in range(len(output)):
         print(seq2[i] + '|', end='')
         print(*output[i], sep='|')
+    return output
 
 def needlemanWunch(gapPenalty, match, misMatch, seq1, seq2):
     matrix = initMatrix(len(seq1), len(seq2), gapPenalty)
@@ -124,6 +125,7 @@ def needlemanWunch(gapPenalty, match, misMatch, seq1, seq2):
     print()
     printTraceback(getTraceback(
         matrix, len(seq1), len(seq2), seq1, seq2))
+    return matrix
 
 def smithwaterman(gapPenalty, match, misMatch, seq1, seq2):
     matrix = [[0] * (len(seq1)+1) for _ in range(len(seq2)+1)]
@@ -143,16 +145,17 @@ def smithwaterman(gapPenalty, match, misMatch, seq1, seq2):
     printMatrix(seq1, seq2, matrix)
     print()
     printTraceback(getTraceback(matrix, maxI, MaxJ, seq1, seq2))
+    return matrix
 
 if __name__ == "__main__":
-    DotMatrixWindowScoring(windowSize=9,
+    output_DotMatrixWindowScoring=DotMatrixWindowScoring(windowSize=9,
                            step=3,
                            threshold=4,
                            seq1="ACCTTGTCCTCTTTGCCC",
                            seq2="ACGTTGACCTGTAACCTC"
                            )
 
-needlemanWunch(
+result_needlemanWunch=needlemanWunch(
         gapPenalty=-1,
         match=2,
         misMatch=-1,
@@ -160,7 +163,7 @@ needlemanWunch(
         seq2="CATGT"
     )
 
-smithwaterman(
+result_smithwaterman=smithwaterman(
         gapPenalty=-6,
         match=5,
         misMatch=-2,
@@ -168,7 +171,28 @@ smithwaterman(
         seq2="TTCATA"
     )
 
-# Driver program to test the above function
 X = "AGGTAB"
 Y = "GXTXAYB"
 print ("Length of LCS is ", lcs(X, Y) )
+
+import numpy as np
+target_needlemanWunch = np.array([[0, -1, -2, -3, -4, -5, -6], [-1, -1, 1, 0, -1, -2, -3], [-2, 1, 0, 0, -1, -2, -3], [-3, 0, 0, -1, -1, 1, 0], [-4, -1, -1, 2, 1, 0, 3], [-5, -2, -2, 1, 1, 3, 2]])
+target_smithwaterman  = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 5, 0, 0, 5, 0, 0, 5, 0], [0, 5, 3, 0, 5, 3, 0, 5, 3], [0, 0, 3, 8, 2, 10, 4, 0, 3], [0, 0, 0, 2, 6, 4, 8, 2, 5], [0, 5, 0, 0, 7, 4, 2, 13, 7], [0, 0, 3, 0, 1, 5, 2, 7, 18]])
+target_DotMatrixWindowScoring = np.array([[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']])
+
+def test_lcs():
+    assert lcs(X, Y) == 4        
+
+def test_needlemanWunch():
+  np.testing.assert_array_equal(target_needlemanWunch, result_needlemanWunch)
+
+def test_smithwaterman():
+  np.testing.assert_array_equal(target_smithwaterman, result_smithwaterman)
+
+def test_DotMatrixWindowScoring():
+  np.testing.assert_array_equal(target_DotMatrixWindowScoring, output_DotMatrixWindowScoring)
+
+test_lcs()
+test_needlemanWunch()
+test_smithwaterman()
+test_DotMatrixWindowScoring()
